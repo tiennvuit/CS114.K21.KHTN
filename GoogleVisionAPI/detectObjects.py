@@ -1,36 +1,59 @@
-import os
+import base64
+import urllib.parse
+import requests
+import json
+import sys
 import argparse
+from user_login import get_token
+import time
+from PIL import Image
 
-def localize_objects(path):
-    """Localize objects in the local image.
+url = 'http://service.mmlab.uit.edu.vn/mmlab_api/object_detect'
 
-    Args:
-    path: The path to the local file.
+
+def get_boundingBoxes(image_path: str):
     """
-    from google.cloud import vision
-    client = vision.ImageAnnotatorClient()
+    Input: 
 
-    with open(path, 'rb') as image_file:
-        content = image_file.read()
-    image = vision.types.Image(content=content)
+    Output: json file that store informations of objects in image.
+    """
+    # Get token from API Mmlab.
+    token = get_token()
+    image = open(image_path, 'rb')
+    image_read = image.read()
+    encoded = base64.encodebytes(image_read)
+    encoded_string = encoded.decode('utf-8')
+    data = {
+        'api_version': '1.0',
+        'data': {
+            'method': 'yolov3',
+            'model_id': '1575949128.9343169',
+            'images': [encoded_string, encoded_string]
+        }
+    }
+    headers = {'Content-type': 'application/json', 'Authorization': "bearer " + token}
+    data_json = json.dumps(data)
+    response = requests.post(url, data = data_json, headers=headers)
+    return response.json()
 
-    objects = client.object_localization(
-        image=image).localized_object_annotations
 
-    print('Number of objects found: {}'.format(len(objects)))
-    for object_ in objects:
-        print('\n{} (confidence: {})'.format(object_.name, object_.score))
-        print('Normalized bounding polygon vertices: ')
-        for vertex in object_.bounding_poly.normalized_vertices:
-            print(' - ({}, {})'.format(vertex.x, vertex.y))
+def draw_bounding_boxes(image, bboxes: json):
+    bboxes = bboxes["data"]["predicts"][0] +  bboxes["data"]["predicts"][1]
+    
 
 
 def main(args):
-    path = args.image_path
-    localize_objects(path=path)
-
+    image_path = str(args.path)
+    # Get bouding boxes of objects in image.
+    bboxes = get_boundingBoxes(image_path=image_path)
+    print(bboxes)
+    # Draw bounding boxes to image.
+    # draw_bounding_boxes(image=image, bboxes=bboxes)
+    
+    
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--image_path", help="The path of image", default="test.png")
+    parser = argparse.ArgumentParser(description="The program using API of Mmlab-UIT to detect multiable object")
+    parser.add_argument("--path", help="The path of image", default="test.png")
     args = parser.parse_args()
     main(args)
+    
