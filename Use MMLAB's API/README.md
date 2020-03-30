@@ -3,16 +3,16 @@
 <img src="output/detected_test3.png" alt="Detect objects in image" style="width: 60% height: 200px">
 
 ---
-## 1. The flow working is:
+## 1. The flow working
 
-1. Login in to Mmlab and get token
+1. Login into server and get token.
 
-2. Use thtoken to using API: the sending data is the encoded image object and the response is the file json that containt all bounding boxes, class name, scores of objects in images.
+2. Use the token to using API: the sending data is the encoded image object and the response is the file json that containt all bounding boxes, class name, scores of objects in images.
 
 3. Use the json file to draw rectangles in image and display to screen.
 
 ---
-## 2. Structure of source code
+## 2. Structure of code
 ```
 Use MMLAB's API/
 ├── detect_objects.py
@@ -69,6 +69,6 @@ python3 detect_objects.py -path name_image
 ```
 
 ---
-## About account
+## Note
 - To use API, you need the account to login into server. Let contact MMlab to request for using via email: *mmlab@uit.edu.vn*
 - But, in this project we can use the providing token included in code so you can use API easily by following step by step about.
