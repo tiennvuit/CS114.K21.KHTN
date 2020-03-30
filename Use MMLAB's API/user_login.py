@@ -6,7 +6,8 @@ import json
 url = 'http://service.mmlab.uit.edu.vn/mmlab_api/user_login/post'
 
 def get_token():
-    data ={'user_name': 'admin', 'password': 'admin'}
+    # The user_name, password we need to provided by administrators of MMlab.
+    data ={'user_name': 'ahihi', 'password': 'ahihi'} # Just a joke
     headers = {'Content-type': 'application/json'}
     data_json = json.dumps(data)
     response = requests.post(url, data = data_json, headers=headers)

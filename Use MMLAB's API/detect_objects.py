@@ -8,6 +8,7 @@ from user_login import get_token
 import time
 from PIL import Image, ImageDraw
 import cv2
+import os
 
 url = 'http://service.mmlab.uit.edu.vn/mmlab_api/object_detect'
 
@@ -63,6 +64,12 @@ def draw_bounding_boxes(image, bboxes: json):
 
 def main(args):
     image_path = str(args.path)
+
+    # Check the file directory whether exit or not.
+    if not os.path.exists('input/'+image_path):
+        print("\nThe path of image is not exist !\nCheck again in /input folder.")
+        exit(1)
+
     bboxes = get_boundingBoxes(image_path="input/"+image_path)
     image = cv2.imread("input/"+image_path)
 
@@ -84,5 +91,5 @@ if __name__ == "__main__":
     args = parser.parse_args()
     main(args)
 
-    print("---------------------------------------Many thanks forAPI's MMLAB-UIT----------------------------------")
+    print("\n---------------------------------------Many thanks forAPI's MMLAB-UIT----------------------------------")
     print("<3 <3 <3 <3 <3 <3 <3 <3 <3 <3 <3 <3 <3 <3 <3 <3 <3 <3 <3 <3 <3 <3 <3 <3 <3 <3 <3 <3 <3 <3 <3 <3 <3 <3 <3")
