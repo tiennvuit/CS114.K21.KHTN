@@ -1,6 +1,6 @@
 # Use API Object Detection of MMLAB - UIT.
 
-<img src="output/detected_test3.png" alt="Detect objects in image" style="width: 60% height: 300px">
+<img src="output/detected_test3.png" alt="Detect objects in image" style="width: 60% height: 200px">
 
 ---
 ## 1. The flow working is:
