@@ -31,12 +31,12 @@ Use MMLAB's API/
 ## 3. Set up
 1. Clone project to your local machine.
 ```
-git clone https://github.com/tiennvuit/CS114.K21.KHTN
+git clone https://github.com/tiennvuit/CS114.K21.KHTN.git
 ```
 
 2. Go to the project directory
 ```
-cd CS114.K21.KHTN/
+cd CS114.K21.KHTN/Use\ MMLAB\'s\ API/
 ```
 3. Create virtual environment.
 ```bash
@@ -68,5 +68,6 @@ python3 detect_objects.py -path name_image
 ```
 
 ---
-To use API, you need the account to login into server. Let contact MMlab to request for using via email: *mmlab@uit.edu.vn*
-
+## About account
+- To use API, you need the account to login into server. Let contact MMlab to request for using via email: *mmlab@uit.edu.vn*
+- But, in this project we can use the providing token included in code so you can use API easily by following step by step about.
