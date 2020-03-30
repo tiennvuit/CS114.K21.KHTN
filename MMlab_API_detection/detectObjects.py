@@ -37,13 +37,14 @@ def get_boundingBoxes(image_path: str):
     return response.json()
 
 def draw_bounding_boxes(image, bboxes: json):
+    image = Image.open(image)
     # Get the bounding boxes from response got from API
     bounding_boxes = bboxes['data']['predicts'][0]   # An array contains all bounding boxes of detected object in image.
     for bounding_box in bounding_boxes:
         box = bounding_box['bbox']
         label = bounding_box['object']
         score = bounding_box['score']
-        #draw bouding box, label, score for each object in image
+        
 
 def main(args):
     image_path = str(args.path)
