@@ -71,4 +71,4 @@ python3 detect_objects.py -path name_image
 ---
 ## Note
 - To use API, you need the account to login into server. Let contact MMlab to request for using via email: *mmlab@uit.edu.vn*
-- But, in this project we can use the providing token included in code so you can use API easily by following step by step about.
+- But, in this project we can use the providing token included in code so you can use API easily by following step by step above.
