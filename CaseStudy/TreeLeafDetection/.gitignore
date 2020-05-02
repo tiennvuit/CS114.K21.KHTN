@@ -1,2 +1,4 @@
 Folio Leaf Dataset/
 .gitignore
+__pychache__/
+.vscode/
