@@ -16,6 +16,8 @@ def getArgument():
 
 # Load dataset into program
 def loadDataset():
+    print("Step 1. Loading dataset")
+    print("\tLoading dataset ...")
     dataset = []
     labelset = []
     # Loop through the label class
@@ -24,21 +26,23 @@ def loadDataset():
             image = Image.open(os.path.join(DATASET_DIR,label,file))
             # Resize the image object
             image = image.resize(IMAGE_SIZE, Image.NEAREST)
-            print("{} is resized to {} size".format(file, IMAGE_SIZE))
             # Add the image to the dataset
             dataset.append(image)
             # Add the cooresponding label of the image
             labelset.append(label)
 
     #getInformationDataSet(dataset=dataset)
-    print("Load dataset successfully !")
+    print("\tLoad dataset successfully !")
     return (dataset, labelset)
 
 def featureExtraction(dataset, method):
+    print("Step 2. Feature extraction")
+    print("\tExtracting feature vectors from dataset....")
     feature_vectors = []
     for image in dataset:
         feature_vector = featureExtracting(image, method)
-            feature_vectors.append(feature_vector)
+        feature_vectors.append(feature_vector)
+    print("\tFeature extraction successfully !")
     return feature_vectors
 
 def featureExtracting(image, method: str):
@@ -46,9 +50,8 @@ def featureExtracting(image, method: str):
     if method == "HOG":
         fd, hog_image = hog(image=image, orientations=8, pixels_per_cell=(16,16), 
                             cells_per_block=(1, 1), visualize=True, multichannel=True)
-        # Convert hog_image to hog feeature
-        # hog_vector = 
-        reutrn hog_vector
+        hog_feature = hog_image[0]
+        return hog_feature
 
     if method == "SIFT":
         ### ... 
@@ -73,11 +76,17 @@ def getInformationDataSet(dataset):
         print("Shape: {} have {} images".format(size, sizes[size]))
 
     
-def trainModel(training_set, classifier: str):
+def trainModel(dataset, label, classifier: str):
+    print("Step 4. Training model using {} algorithm.".format(classifier))
+    print("\tTraining process ....")
     if classifier == "kNN":
         # Train model using kNN algorithms
         model = KNeighborsClassifier(n_neighbors=32, weights='uniform', algorithm='auto')
-        model.fit(X, y)
+        model.fit(dataset, label)
+        print("\tTraining successfully !")
         return model
     if classifier == 'SVM':
         # Train model using SVM algorithm
+        pass
+    print("The classifier is not exist")
+    exit(1)

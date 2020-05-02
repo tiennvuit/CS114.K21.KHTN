@@ -21,12 +21,22 @@ def main(args):
     # Feature extraction 
     feature_vectors = featureExtraction(dataset=dataset, method=extractor)
     # Split dataset
-    X_train, X_test, y_train, y_test = train_test_split(dataset, labelset, test_size=TEST_SIZE)
-    print("Số lượng điểm dữ liệu huấn luyện: {}".format(len(X_train)))
-    print("Số lượng điểm dữ liệu kiểm thử: {}".format(len(X_test)))
+    print("Step 3. Split dataset into training data and test data")
+    print("\tSplitting data...")
+    X_train, X_test, y_train, y_test = train_test_split(feature_vectors, labelset, test_size=TEST_SIZE)
+    print("\tSplit dataset successfully !")
+    print("\tThe size of training data: {}".format(len(X_train)))
+    print("\tThe size of test data: {}".format(len(X_test)))
 
-    # Training model using explicited classifier.
-    model = train(dataset=X_train, y_train, classifier=classifier)
+    # Training model using explicited classifier."
+    model = trainModel(dataset=X_train, label=y_train, classifier=classifier)
+
+    # Test model on test data.
+    print("Step 5. Test model on test data")
+    print("\tTesing model ...")
+    accuary = model.score(X_test, y_test)
+    print("\tThe accuary of model is {} %".format(accuary*100))
+
     
 if __name__ == "__main__":
     args = getArgument()
