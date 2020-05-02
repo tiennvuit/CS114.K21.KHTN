@@ -1,10 +1,10 @@
-# Case study in Machine Learning Course CS114.K21.KHTN 2020
-## Plant Leaf Classification.
+# Plant Leaf Classification.
 
 ## Dataset information providing by UCI.
 - Download dataset at [here](http://archive.ics.uci.edu/ml/datasets/Folio?fbclid=IwAR07TBnKRXAIaCW-YJXSFVlO_nYJArvnQ3Nt7JfdN02WYsRr4CkDtdLa2GQ) and extract it into the same directory with source code.
 - The leaves were placed on a white background and then photographed.
 - The pictures were taken in broad daylight to ensure optimum light intensity.
+- The entire dataset have 
 
 ## Flow Working
 1. Load dataset and resize every image to the same size (see in the *config.py*) before store them into memory.
@@ -41,15 +41,32 @@ pip install -r requirements.txt
 python main.py
 ```
 
+## The result archived
+<table style="width:100%">
+  <tr>
+    <th>Feature</th>
+    <th>Classifier</th>
+    <th>Training Loss</th>
+    <th>Accuracy</th>
+  </tr>
+  <tr>
+    <td>HOG</td>
+    <td>kNN</td>
+    <td></td>
+    <td></td>
+  </tr>
+</table>
+
+
 ## Features
 - You can choose the feature approach that you want like HOG, SIFT, CNN features for the classification process.
     + HOG
-    + SIFT
-    + CNN feature
+    + <strike>SIFT</strike>
+    + <strike>CNN feature</strike>
 - You can choose the classifier (algorithm) that you want to training model like kNN, Random Forest, SVM.
     + kNN
-    + Random Forest
-    + SVM
+    + <strike>Random Forest</strike>
+    + <strike>SVM</strike>
 
 
 
