@@ -1,6 +1,4 @@
-Folio Leaf Dataset/
-.gitignore
+dataset/
 __pycache__/
 .vscode/
 __init__.py
-Folio Leaf Dataset.zip
