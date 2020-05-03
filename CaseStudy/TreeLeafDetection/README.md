@@ -28,7 +28,7 @@ python -m venv env
 
 source env/bin/activate
 
-pip install --upgarade pip
+pip install --upgrade pip
 ```
 
 - Install the required dependences.
