@@ -12,6 +12,7 @@ def getArgument():
     parser = argparse.ArgumentParser(description='Process some integers.')
     parser.add_argument('-extractor', help='The feature extractor', default="HOG")
     parser.add_argument('-classifier', help="The classifier use", default="kNN")
+    parser.add_argument('-image_path', help="The test image", default="test0.png")
     return parser.parse_args()
 
 # Load dataset into program
@@ -31,8 +32,8 @@ def loadDataset():
             # Add the cooresponding label of the image
             labelset.append(label)
 
-    #getInformationDataSet(dataset=dataset)
     print("\tLoad dataset successfully !")
+    print("\tThe size of dataset is {}".format(len(labelset)))
     return (dataset, labelset)
 
 def featureExtraction(dataset, method):
@@ -61,20 +62,6 @@ def featureExtracting(image, method: str):
         return image
     print("Feature extractor is not exist !")
     exit(1)
-
-
-def getInformationDataSet(dataset):
-    print("Kích thước tập dữ liệu: {}".format(len(dataset)))
-    sizes = {}
-    for image in dataset:
-        if image.size not in sizes.keys():
-            sizes[image.size] = 1
-        else:
-            sizes[image.size] += 1
-    print("Thống kê kích thước của tập dữ liệu: ")
-    for size in sizes.keys():
-        print("Shape: {} have {} images".format(size, sizes[size]))
-
     
 def trainModel(dataset, label, classifier: str):
     print("Step 4. Training model using {} algorithm.".format(classifier))
@@ -90,3 +77,4 @@ def trainModel(dataset, label, classifier: str):
         pass
     print("The classifier is not exist")
     exit(1)
+    

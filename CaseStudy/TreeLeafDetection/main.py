@@ -1,6 +1,9 @@
 from utils import getArgument, loadDataset, featureExtraction, trainModel
-from sklearn.model_selection import train_test_split
-from config import *
+from sklearn.model_selection import train_test_split 
+from config import * # Get hyperparameter
+import cPickle # Save model
+import datetime
+
 
 def print_WorkFlow():
     print("Flow working in this project")
@@ -37,6 +40,15 @@ def main(args):
     accuary = model.score(X_test, y_test)
     print("\tThe accuary of model is {} %".format(accuary*100))
 
+    # Save model
+    print("Step 6. Save model into disk")
+    print("\tSaving ...")
+    #with open('model/{}_{}_{}.pkl'.format(extractor,classifier, datetime.datetime.today().strftime('%d-%m-%Y')), 'wb') as fid:
+        #cPickle.dump(gnb, fid)
+    with open('model/{}_{}.pkl'.format(extractor,classifier), 'wb') as fid:
+        cPickle.dump(gnb, fid)
+    print("\tSave model successully with name {}".format(classifier, datetime.datetime.today().strftime('%d-%m-%Y')))
+    
     
 if __name__ == "__main__":
     args = getArgument()
