@@ -1,7 +1,7 @@
 from utils import getArgument, loadDataset, featureExtraction, trainModel
-from sklearn.model_selection import train_test_split 
+from sklearn.model_selection import train_test_split
 from config import * # Get hyperparameter
-import cPickle # Save model
+import pickle  # Save model
 import datetime
 
 
@@ -18,10 +18,10 @@ def main(args):
     classifier = args.classifier
     #print("Use {} is the feature extractor".format(extractor))
     #print("Use {} is the classifier".format(classifier))
-    
+
     # Load dataset into memory
     dataset, labelset = loadDataset()
-    # Feature extraction 
+    # Feature extraction
     feature_vectors = featureExtraction(dataset=dataset, method=extractor)
     # Split dataset
     print("Step 3. Split dataset into training data and test data")
@@ -48,10 +48,9 @@ def main(args):
     with open('model/{}_{}.pkl'.format(extractor,classifier), 'wb') as fid:
         cPickle.dump(gnb, fid)
     print("\tSave model successully with name {}".format(classifier, datetime.datetime.today().strftime('%d-%m-%Y')))
-    
-    
+
+
 if __name__ == "__main__":
     args = getArgument()
     print_WorkFlow()
     main(args)
-

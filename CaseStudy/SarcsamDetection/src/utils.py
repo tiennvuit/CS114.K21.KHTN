@@ -1,12 +1,11 @@
 import argparse
 import os
 import numpy as np
+import json
 from config import *
 
-DATASET_DIR = "dataset/test.json"
-
 def getArgument():
-    parser = argparse.ArgumentParser(description='Process some integers.')
+    parser = argparse.ArgumentParser(description='Sarcasm detetion')
     parser.add_argument('-extractor', help='The feature extractor', default="BOW")
     parser.add_argument('-classifier', help="The classifier use", default="kNN")
     parser.add_argument('-image_path', help="The test image", default="test0.png")
@@ -18,7 +17,7 @@ def loadDataset():
     print("\tLoading dataset ...")
     dataset = []
     labelset = []
-    for l in open(file,'r'):
+    for l in open(DATASET_DIR,'r'):
         data = json.loads(l)
         dataset.append(data['headline'])
         labelset.append(data['is_sarcastic'])
@@ -40,17 +39,17 @@ def featureExtraction(dataset, method):
 def featureExtracting(sentense, method: str):
     # Use the extracting feature method like HOG, SIFT, Deep Fetures
     if method == "BOW":
-        
-        return hog_feature
+        return None
+
     print("Feature extractor is not exist !")
     exit(1)
-    
+
 def trainModel(dataset, label, classifier: str):
     print("Step 4. Training model using {} algorithm.".format(classifier))
     print("\tTraining process ....")
     if classifier == "kNN":
         # Train model using kNN algorithms
-    
+
         model.fit(dataset, label)
         print("\tTraining successfully !")
         return model
@@ -59,4 +58,3 @@ def trainModel(dataset, label, classifier: str):
         pass
     print("The classifier is not exist")
     exit(1)
-    
