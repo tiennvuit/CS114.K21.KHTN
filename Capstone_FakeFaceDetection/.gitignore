@@ -1,3 +1,5 @@
+dataset/
 .ipynb_checkpoints/
 Documents/
 videos/
+__pycache__/
