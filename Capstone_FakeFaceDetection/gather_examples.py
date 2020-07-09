@@ -1,12 +1,14 @@
 # USAGE
-# python gather_examples.py --input videos/real/real01.mov --output dataset/real/real01 --detector face_detector --skip 1
-# python gather_examples.py --input videos/fake/fake01.mov --output dataset/fake/fake01 --detector face_detector --skip 4
+# python gather_examples.py --input videos/real/real01.mov --output dataset/real/real01 --detector face_detector --skip 5
+# python gather_examples.py --input videos/fake/fake01.mov --output dataset/fake/fake01 --detector face_detector --skip 5
 
 # import the necessary packages
 import numpy as np
 import argparse
 import cv2
 import os
+
+from blur_detection import detect_blur
 
 
 def get_arguments():
@@ -20,15 +22,17 @@ def get_arguments():
 		help="path to OpenCV's deep learning face detector")
 	parser.add_argument("-c", "--confidence", type=float, default=0.5,
 		help="minimum probability to filter weak detections")
-	parser.add_argument("-s", "--skip", type=int, default=16,
+	parser.add_argument("-s", "--skip", type=int, default=5,
 		help="# of frames to skip before applying face detection")
 	parser.add_argument("-sh", "--show", type=int, default=0,
 		help="Show or not show the progress via windows")
+	parser.add_argument("-th", "--threshold", type=float, default=50.0,
+		help="The threshold to accept the bluring frame")
 	args = vars(parser.parse_args())
 	return args
 
 
-def extract_and_save_face(video_path: str, net: object, output_path: str, default_confidence: float, skip: int, show:bool):
+def extract_and_save_face(video_path: str, net: object, output_path: str, default_confidence: float, skip: int, show:bool, threshold: int):
 	# open a pointer to the video file stream and initialize the total
 	# number of frames read and saved thus far
 	vs = cv2.VideoCapture(video_path)
@@ -79,6 +83,11 @@ def extract_and_save_face(video_path: str, net: object, output_path: str, defaul
 				box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
 				(startX, startY, endX, endY) = box.astype("int")
 				face = frame[startY:endY, startX:endX]
+				# print(face.shape)
+				# input()
+				check_blur, _ = detect_blur(image=face, threshold=threshold)
+				if check_blur:
+					continue
 
 				# write the frame to disk
 				p = os.path.sep.join([output_path, str(saved).zfill(4) + ".png"])
@@ -100,29 +109,24 @@ def extract_and_save_face(video_path: str, net: object, output_path: str, defaul
 
 
 def main(args):
-	video_path = args["input"]
-	detector = args["detector"]
-	output_path = args["output"]
-	confidence = args["confidence"]
-	skip = args["skip"]
-	show = args["show"]
 	# load our serialized face detector from disk
 	print("[INFO] loading face detector...")
-	protoPath = os.path.sep.join([detector, "deploy.prototxt"])
-	modelPath = os.path.sep.join([detector,
+	protoPath = os.path.sep.join([args["detector"], "deploy.prototxt"])
+	modelPath = os.path.sep.join([args["detector"],
 		"res10_300x300_ssd_iter_140000.caffemodel"])
 	net = cv2.dnn.readNetFromCaffe(protoPath, modelPath)
 
 	# Create output directory if it is not exist
-	if not os.path.exists(output_path):
-		os.mkdir(output_path)
+	if not os.path.exists(args["output"]):
+		os.mkdir(args["output"])
 
-	extract_and_save_face(video_path=video_path,
+	extract_and_save_face(video_path=args["input"],
 							net=net,
-							output_path=output_path,
-							default_confidence=confidence,
-							skip=skip,
-							show=show)
+							output_path=args["output"],
+							default_confidence=args["confidence"],
+							skip=args["skip"],
+							show=args["show"],
+							threshold=args["threshold"])
 
 
 if __name__ == '__main__':

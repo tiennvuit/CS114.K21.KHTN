@@ -1,12 +1,9 @@
 # USAGE
-# python train.py --dataset dataset --model liveness.model --le le.pickle
+# python train.py --dataset dataset --model model --le le.pickle
 
 # set the matplotlib backend so figures can be saved in the background
-import matplotlib
-matplotlib.use("Agg")
-
 # import the necessary packages
-from models.livenessnet import LivenessNet
+from classifier.livenessnet import LivenessNet
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
@@ -17,15 +14,21 @@ import argparse
 import pickle
 import cv2
 import os
-from utils import get_arguments, load_dataset
+import datetime
+from utils import get_arguments, load_dataset, plot_progress
 from config import *
 
 
 def main(args):
 	# Load dataset to memory
 	data, labels, le = load_dataset(dataset_path=args["dataset"])
+
+	# convert the data into a NumPy array, then preprocess it by scaling
+    # all pixel intensities to the range [0, 1]
+	data = np.array(data, dtype="float") / 255.0
+
 	# partition the data into training and testing splits using 75% of
-	# the data for training and the remaining 25% for testing
+	# the data for training and the default remaining 25% for testing
 	(trainX, testX, trainY, testY) = train_test_split(data, labels,
 		test_size=TEST_SIZE, random_state=42)
 
@@ -55,14 +58,16 @@ def main(args):
 		predictions.argmax(axis=1), target_names=le.classes_))
 
 	# save the network to disk
-	print("[INFO] serializing network to '{}'...".format(args["model"]))
-	day = datetime.now().strftime("%Y%m%d-%H%M%S")
-	model.save(args["model"] + day, save_format="h5")
+	day = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+	print("[INFO] serializing network to '{}'...".format("saved_model/model" + day))
+	model.save("saved_model/model_" + day, save_format="h5")
 
 	# save the label encoder to disk
-	f = open(args["le"], "wb")
+	f = open("label_encoded/label_encoded" + day + ".pl", "wb")
 	f.write(pickle.dumps(le))
 	f.close()
+
+	plot_progress(model=H, name=day)
 
 if __name__ == "__main__":
 	args = get_arguments()
