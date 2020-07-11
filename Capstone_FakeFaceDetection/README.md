@@ -21,7 +21,10 @@
 
 ## Các thu thập dữ liệu
 
+
 ## Mô tả tập dữ liệu
+
+*Truy cập dữ liêu qua [drive](https://drive.google.com/drive/folders/1P3uO1lQrTTdc8f0cuSVmOYjmJae09Imt?usp=sharing).*
 
 ## Mô tả cách rút trích đặc trưng
 
