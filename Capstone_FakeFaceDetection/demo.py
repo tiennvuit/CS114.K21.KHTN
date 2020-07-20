@@ -12,15 +12,17 @@ import pickle
 import time
 import cv2
 import os
+from config import ENCODED_LABELS
+
 
 def get_arguments():
 	# construct the argument parser and parse the arguments
 	parser = argparse.ArgumentParser()
 	parser.add_argument("-m", "--model", type=str, required=True,
 		help="path to trained model")
-	parser.add_argument("-l", "--le", type=str, required=True,
-		help="path to label encoder")
-	parser.add_argument("-d", "--detector", type=str, required=True,
+	# parser.add_argument("-l", "--le", type=str, required=True,
+	# 	help="path to label encoder")
+	parser.add_argument("-d", "--detector", type=str, default='face_detector',
 		help="path to OpenCV's deep learning face detector")
 	parser.add_argument("-c", "--confidence", type=float, default=0.5,
 		help="minimum probability to filter weak detections")
@@ -36,8 +38,11 @@ def main(args):
 
 	# load the liveness detector model and label encoder from disk
 	print("[INFO] loading liveness detector...")
-	model = load_model(args["model"])
-	le = pickle.loads(open(args["le"], "rb").read())
+	if args['model'].find('deep') != -1:
+		model = load_model(args["model"])
+	elif args['model'].find('hand') != -1:
+		model = pickle.load(open(args['model'], 'rb'))
+	# le = pickle.loads(open(args["le"], "rb").read())
 
 	# initialize the video stream and allow the camera sensor to warmup
 	print("[INFO] starting video stream...")
@@ -45,79 +50,152 @@ def main(args):
 	time.sleep(2.0)
 
 	# loop over the frames from the video stream
-	while True:
-		# grab the frame from the threaded video stream and resize it
-		# to have a maximum width of 600 pixels
-		frame = vs.read()
-		frame = imutils.resize(frame, width=800)
+	if args['model'].find('deep') != -1:
 
-		# grab the frame dimensions and convert it to a blob
-		(h, w) = frame.shape[:2]
-		blob = cv2.dnn.blobFromImage(cv2.resize(frame, (300, 300)), 1.0, (300, 300), (104.0, 177.0, 123.0))
+		while True:
+			# grab the frame from the threaded video stream and resize it
+			# to have a maximum width of 600 pixels
+			frame = vs.read()
+			frame = imutils.resize(frame, width=800)
 
-		# pass the blob through the network and obtain the detections and
-		# predictions
-		net.setInput(blob)
-		detections = net.forward()
+			# grab the frame dimensions and convert it to a blob
+			(h, w) = frame.shape[:2]
+			blob = cv2.dnn.blobFromImage(cv2.resize(frame, (300, 300)), 1.0, (300, 300), (104.0, 177.0, 123.0))
 
-		# loop over the detections
-		for i in range(0, detections.shape[2]):
-			# extract the confidence (i.e., probability) associated with the
-			# prediction
-			confidence = detections[0, 0, i, 2]
+			# pass the blob through the network and obtain the detections and
+			# predictions
+			net.setInput(blob)
+			detections = net.forward()
 
-			# filter out weak detections
-			if confidence > args["confidence"]:
-				# compute the (x, y)-coordinates of the bounding box for
-				# the face and extract the face ROI
-				box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
-				(startX, startY, endX, endY) = box.astype("int")
+			# loop over the detections
+			for i in range(0, detections.shape[2]):
+				# extract the confidence (i.e., probability) associated with the
+				# prediction
+				confidence = detections[0, 0, i, 2]
 
-				# ensure the detected bounding box does fall outside the
-				# dimensions of the frame
-				startX = max(0, startX)
-				startY = max(0, startY)
-				endX = min(w, endX)
-				endY = min(h, endY)
+				# filter out weak detections
+				if confidence > args["confidence"]:
+					# compute the (x, y)-coordinates of the bounding box for
+					# the face and extract the face ROI
+					box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
+					(startX, startY, endX, endY) = box.astype("int")
 
-				# extract the face ROI and then preproces it in the exact
-				# same manner as our training data
-				face = frame[startY:endY, startX:endX]
-				try:
-					face = cv2.resize(face, (64, 64))
-				except:
-					continue
-				face = face.astype("float") / 255.0
-				face = img_to_array(face)
-				face = np.expand_dims(face, axis=0)
+					# ensure the detected bounding box does fall outside the
+					# dimensions of the frame
+					startX = max(0, startX)
+					startY = max(0, startY)
+					endX = min(w, endX)
+					endY = min(h, endY)
 
-				# pass the face ROI through the trained liveness detector
-				# model to determine if the face is "real" or "fake"
-				preds = model.predict(face)[0]
-				j = np.argmax(preds)
-				label = le.classes_[j]
+					# extract the face ROI and then preproces it in the exact
+					# same manner as our training data
+					face = frame[startY:endY, startX:endX]
+					try:
+						face = cv2.resize(face, (64, 64))
+					except:
+						continue
+					face = face.astype("float") / 255.0
+					face = img_to_array(face)
+					face = np.expand_dims(face, axis=0)
 
-				# # draw the label and bounding box on the frame
-				if label == 'real':
-					label = "{}: {:.4f}".format(label, preds[j])
-					cv2.putText(frame, label, (startX, startY - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-				else:
-					label = "{}: {:.4f}".format(label, preds[j])
-					cv2.putText(frame, label, (startX, startY - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
-				cv2.rectangle(frame, (startX, startY), (endX, endY), (255, 0, 0), 2)
+					# pass the face ROI through the trained liveness detector
+					# model to determine if the face is "fake" or "real"
+					preds = model.predict(face)[0]
+					j = np.argmax(preds)
+					label = ENCODED_LABELS[j]
 
-		# show the output frame and wait for a key press
-		cv2.imshow("Frame", frame)
-		key = cv2.waitKey(1) & 0xFF
+					# draw the label and bounding box on the frame
+					if label == 'Real':
+						label = "{}: {:.4f}".format(label, preds[j])
+						cv2.putText(frame, label, (startX, startY - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+					else:
+						label = "{}: {:.4f}".format(label, preds[j])
+						cv2.putText(frame, label, (startX, startY - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+					cv2.rectangle(frame, (startX, startY), (endX, endY), (255, 0, 0), 2)
 
-		# if the `q` key was pressed, break from the loop
-		if key == ord("q"):
-			break
+			# show the output frame and wait for a key press
+			cv2.imshow("Frame", frame)
+			key = cv2.waitKey(1) & 0xFF
 
-	# do a bit of cleanup
-	cv2.destroyAllWindows()
-	vs.stop()
+			# if the `q` key was pressed, break from the loop
+			if key == ord("q"):
+				break
 
+		# do a bit of cleanup
+		cv2.destroyAllWindows()
+		vs.stop()
+
+	# Using hand-crafted models
+	else:
+		from hand_crafted_model import LocalBinaryPatterns
+		desc = LocalBinaryPatterns(numPoints=24, radius=8)
+
+		while True:
+			# grab the frame from the threaded video stream and resize it
+			# to have a maximum width of 600 pixels
+			frame = vs.read()
+			frame = imutils.resize(frame, width=800)
+
+			# grab the frame dimensions and convert it to a blob
+			(h, w) = frame.shape[:2]
+			blob = cv2.dnn.blobFromImage(cv2.resize(frame, (300, 300)), 1.0, (300, 300), (104.0, 177.0, 123.0))
+
+			# pass the blob through the network and obtain the detections and
+			# predictions
+			net.setInput(blob)
+			detections = net.forward()
+
+			# loop over the detections
+			for i in range(0, detections.shape[2]):
+				# extract the confidence (i.e., probability) associated with the
+				# prediction
+				confidence = detections[0, 0, i, 2]
+
+				# filter out weak detections
+				if confidence > args["confidence"]:
+					# compute the (x, y)-coordinates of the bounding box for
+					# the face and extract the face ROI
+					box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
+					(startX, startY, endX, endY) = box.astype("int")
+
+					# ensure the detected bounding box does fall outside the
+					# dimensions of the frame
+					startX = max(0, startX)
+					startY = max(0, startY)
+					endX = min(w, endX)
+					endY = min(h, endY)
+
+					# extract the face ROI and then preproces it in the exact
+					# same manner as our training data
+					face = frame[startY:endY, startX:endX]
+					hist = desc.describe(cv2.cvtColor(face, cv2.COLOR_BGR2GRAY)).reshape(1, -1)
+
+					# pass the face ROI through the trained liveness detector
+					# model to determine if the face is "fake" or "real"
+					preds = model.predict_proba(hist)[0]
+					j = np.argmax(preds)
+					label = ENCODED_LABELS[j]
+
+					# draw the label and bounding box on the frame
+					if label == 'Real':
+						label = "{}: {:.4f}".format(label, preds[j])
+						cv2.putText(frame, label, (startX, startY - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+					else:
+						label = "{}: {:.4f}".format(label, preds[j])
+						cv2.putText(frame, label, (startX, startY - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+					cv2.rectangle(frame, (startX, startY), (endX, endY), (255, 0, 0), 2)
+
+			# show the output frame and wait for a key press
+			cv2.imshow("Frame", frame)
+			key = cv2.waitKey(1) & 0xFF
+
+			# if the `q` key was pressed, break from the loop
+			if key == ord("q"):
+				break
+
+		# do a bit of cleanup
+		cv2.destroyAllWindows()
+		vs.stop()
 
 if __name__ == "__main__":
 	args = get_arguments()
