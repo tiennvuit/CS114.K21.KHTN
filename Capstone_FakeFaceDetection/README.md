@@ -6,9 +6,13 @@
 
 - Phát biểu bài toán: Phát hiện khuôn mặt trong ảnh /video có phải khuôn mặt giả mạo hay không.
 
-- Input: một ảnh/đoạn video/stream video.
+- Input: ảnh chứa khuôn mặt người được thu từ camera.
 
-- Output: khuôn mặt trong ảnh/video có phải là khuôn mặt giả mạo (1 hoặc 0) hay không.
+- Output: gán nhãn 0 hoặc 1 cho khuôn mặt trong ảnh, trong đó:
+
+  + Nhãn 0 (Fake) thể hiện khuôn mặt trong ảnh là khuôn mặt được hiện thị trên màn hình điện thoại.
+  
+  + Nhãn 1 (Real) thể hiện khuôn mặt trong ảnh là khuôn mặt của người thật đang đứng trước camera
 
 
 ## Tại sao cần phát hiện khuôn mặt giả mạo ?
@@ -19,18 +23,42 @@
 
 - Vì vậy chúng ta cần phải phân loại xem khuôn mặt được đặt trước camera có phải là khuôn mặt giả mạo hay không để đảm bảo tính an toàn của hệ thống.
 
-## Các thu thập dữ liệu
+## Dữ liệu cho bài toán
 
+### Cách xây dựng dữ liệu¶
 
+- Dữ liệu được thu thập gồm có hai lớp là ảnh chứa khuôn mặt giả thật (0 - Real) và khuôn mặt giả mạo (1 - Fake).
+
+- Dữ liệu ảnh chứa khuông mặt thật được rút trích từ video selfie ghi lại khuôn mặt thật của một/nhiều đối tượng. 
+
+- Dữ liệu khuôn mặt giả mạo được xây dựng từ video ghi lại khuôn mặt giả mạo của một/nhiều đối tượng.
+
+  
 ## Mô tả tập dữ liệu
+- Kích thước tập dữ liệu: 1916 ảnh.
+- Số lượng dữ liệu của mỗi lớp:
 
+  + Fake face: 1115
+  + Real face: 806
+
+- Chi tiết mô tả về quá trình xây dựng và tiền xử lý dữ liệu  xem tại file [notebook](https://nbviewer.jupyter.org/github/tiennvuit/CS114.K21.KHTN/blob/master/Capstone_FakeFaceDetection/LivenessDetection_Report.ipynb).
 *Truy cập dữ liêu qua [drive](https://drive.google.com/drive/folders/1P3uO1lQrTTdc8f0cuSVmOYjmJae09Imt?usp=sharing).*
 
+
 ## Mô tả cách rút trích đặc trưng
+
+Có hai hướng tiếp cận bài toán này bằng phương pháp máy học:
+
+- Sử dụng đặc trưng do chuyên gia đề xuất (hand-crafted feature)
+
+- Hướng tiếp cận dựa trên đặc trưng học sâu (deep learning).
+
+Thử nghiệm bài toán này với cả hai phương pháp rút trích đặc trưng.
 
 ## Các phương pháp sử dụng
 
 ## Kết quả và đánh giá
+
 
 ## Thực nghiệm
 
