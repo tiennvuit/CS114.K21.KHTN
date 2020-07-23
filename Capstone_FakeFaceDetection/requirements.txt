@@ -3,3 +3,4 @@ opencv-python
 imutils
 matplotlib
 sklearn
+scikit-image
