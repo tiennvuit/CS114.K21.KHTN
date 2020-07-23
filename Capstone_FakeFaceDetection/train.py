@@ -9,7 +9,7 @@ import pickle
 import cv2
 import os
 import datetime
-from utils import get_arguments, load_datasetDeep, load_datasetLBPs, plot_progress
+from utils import get_arguments, load_datasetDeep, load_datasetLBPs, plot_progress, load_extracted_feature
 from config import *
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, accuracy_score
@@ -25,7 +25,7 @@ def main(args):
 		from tensorflow.keras.preprocessing.image import ImageDataGenerator
 		from tensorflow.keras.optimizers import Adam
 
-		data, labels, le = load_datasetDeep(dataset_path=args["dataset"])
+		data, labels, le = load_datasetDeep(dataset_path=args["path"])
 		# convert the data into a NumPy array, then preprocess it by scaling
 	    # all pixel intensities to the range [0, 1]
 		data = np.array(data, dtype="float") / 255.0
@@ -71,9 +71,12 @@ def main(args):
 
 		print("[INFO] Loading images...")
 
-		data, labels = load_datasetLBPs(dataset_path=args['dataset'],
-										numPoints=args['numPoints'],
-										radius=args['radius'])
+		# data, labels = load_datasetLBPs(dataset_path=args['dataset'],
+		# 								numPoints=args['numPoints'],
+		# 								radius=args['radius'])
+
+		# Load the extracted features
+		data, labels = load_extracted_feature(path=args['path'])
 
 		(trainX, testX, trainY, testY) = train_test_split(data, labels,
 										test_size=TEST_SIZE, random_state=42)
