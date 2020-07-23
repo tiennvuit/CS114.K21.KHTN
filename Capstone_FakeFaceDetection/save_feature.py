@@ -35,6 +35,7 @@ def main(args):
         # label and data lists
 		labels.append(imagePath.split(os.path.sep)[-3])
 		data.append(hist)
+		print("Extracted the image {} to feature vector.".format(imagePath))
 
 	pickle.dump((data, labels), open(args['output'] + "{}p-{}r.pl".format(args['numPoints'], args['radius']), 'wb'))
 
