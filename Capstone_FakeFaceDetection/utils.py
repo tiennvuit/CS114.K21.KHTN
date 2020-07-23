@@ -22,7 +22,7 @@ def get_arguments():
 		help="path to input dataset")
 	parser.add_argument('--model', '-m', default='deeplearning',
 		choices=['deeplearning', 'logistic_regression', 'knn', 'random_forest',
-				'decision_tree', 'naive_bayes', 'svm', 'neural_net'],
+				'decision_tree', 'naive_bayes', 'svm', 'mlp'],
 		help='The model for training')
 	parser.add_argument('--numPoints', '-nP', default=24,
 		help='The number of points parameter for LBPs appoach')
