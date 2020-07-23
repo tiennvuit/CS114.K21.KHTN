@@ -92,6 +92,6 @@ def plot_progress(model: object, name):
     plt.xlabel("Epoch #")
     plt.ylabel("Loss/Accuracy")
     plt.legend(loc="lower left")
-    if not os.path.exists("progress"):
+    if not os.path.exists("figures"):
         os.mkdir("figures")
     plt.savefig("figures/plot_" + name)

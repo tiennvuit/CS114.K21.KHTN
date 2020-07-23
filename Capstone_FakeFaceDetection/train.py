@@ -94,7 +94,7 @@ def main(args):
 
 		# Save the model to disk
 		print("[INFO] Saving model to disk ...")
-		filename = 'saved_model/hand_crafted_model/' + args['model'] + "_model_" + datetime.datetime.now().strftime("%Y%m%d-%H%M")
+		filename = 'saved_model/hand-crafted_model/' + args['model'] + "_model_" + datetime.datetime.now().strftime("%Y%m%d-%H%M")
 		pickle.dump(model, open(filename, 'wb'))
 
 

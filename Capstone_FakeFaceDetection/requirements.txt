@@ -1,5 +1,5 @@
-python3.7
 tensorflow==2.2.0
 opencv-python
 imutils
 matplotlib
+sklearn
