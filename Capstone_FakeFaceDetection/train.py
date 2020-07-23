@@ -27,7 +27,7 @@ def main(args):
 
 		data, labels, le = load_datasetDeep(dataset_path=args["path"])
 		# convert the data into a NumPy array, then preprocess it by scaling
-	    # all pixel intensities to the range [0, 1]
+	        # all pixel intensities to the range [0, 1]
 		data = np.array(data, dtype="float") / 255.0
 
 		# partition the data into training and testing splits using 75% of
@@ -69,14 +69,15 @@ def main(args):
 
 	else:
 
-		print("[INFO] Loading images...")
-
+		#print("[INFO] Loading images...")
 		# data, labels = load_datasetLBPs(dataset_path=args['dataset'],
 		# 								numPoints=args['numPoints'],
 		# 								radius=args['radius'])
 
 		# Load the extracted features
+		print("[INFO] Loading data ...")
 		data, labels = load_extracted_feature(path=args['path'])
+		print("Size of dataset is {}".format(len(data)))
 
 		(trainX, testX, trainY, testY) = train_test_split(data, labels,
 										test_size=TEST_SIZE, random_state=42)
@@ -97,7 +98,7 @@ def main(args):
 
 		# Save the model to disk
 		print("[INFO] Saving model to disk ...")
-		filename = 'saved_model/hand-crafted_model/' + args['model'] + "_model_" + datetime.datetime.now().strftime("%Y%m%d-%H%M")
+		filename = 'saved_model/hand-crafted_model/' + args['model'] + "_model_{}_".format(args['path'].split("/")[-1].split(".")[0]) + datetime.datetime.now().strftime("%Y_%m_%d-%H_%M")
 		pickle.dump(model, open(filename, 'wb'))
 
 

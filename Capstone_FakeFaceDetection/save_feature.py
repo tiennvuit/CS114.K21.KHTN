@@ -14,8 +14,8 @@ def get_arguments():
 	# construct the argument parser and parse the arguments
 	parser = argparse.ArgumentParser()
 	parser.add_argument("--dataset", "-d", default="dataset", help="path to input dataset")
-	parser.add_argument('--numPoints', '-nP', default=24, help='The number of points parameter for LBPs appoach')
-	parser.add_argument('--radius', '-r', default=8, help='The radius parameter for LBPs appoach')
+	parser.add_argument('--numPoints', '-nP', type=int, default=24, help='The number of points parameter for LBPs appoach')
+	parser.add_argument('--radius', '-r', type=int, default=8, help='The radius parameter for LBPs appoach')
 	parser.add_argument('--output', '-o', default='extracted_features/', help='The path of saving file')
 	return vars(parser.parse_args())
 
