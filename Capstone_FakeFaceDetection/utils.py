@@ -18,7 +18,7 @@ from config import EPOCHS
 def get_arguments():
 	# construct the argument parser and parse the arguments
 	parser = argparse.ArgumentParser()
-	parser.add_argument("--dataset", "-d", default="dataset",
+	parser.add_argument("--path", "-p", default="dataset",
 		help="path to input dataset")
 	parser.add_argument('--model', '-m', default='deeplearning',
 		choices=['deeplearning', 'logistic_regression', 'knn', 'random_forest',
@@ -95,3 +95,14 @@ def plot_progress(model: object, name):
     if not os.path.exists("figures"):
         os.mkdir("figures")
     plt.savefig("figures/plot_" + name)
+
+
+def load_extracted_feature(path):
+	try:
+		with open(path, 'rb') as f:
+			data, labels = pickle.load(f)
+	except:
+		print("The path of extracted feature is not invalid !")
+		exit(0)
+
+	return data, labels
