@@ -43,7 +43,7 @@ def extract_and_save_face(video_path: str, net: object, output_path: str, defaul
 	while True:
 		# grab the frame from the file
 		(grabbed, frame) = vs.read()
-		
+
 		if video_path.endswith(".mov"):
 			frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE);
 
