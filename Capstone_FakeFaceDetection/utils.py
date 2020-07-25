@@ -43,7 +43,7 @@ def load_datasetDeep(dataset_path: str):
     for imagePath in imagePaths:
     	# extract the class label from the filename, load the image and
     	# resize it to be a fixed 32x32 pixels, ignoring aspect ratio
-    	label = imagePath.split(os.path.sep)[-3]
+    	label = imagePath.split(os.path.sep)[2]
     	image = cv2.imread(imagePath)
     	image = cv2.resize(image, (32, 32))
 
@@ -53,12 +53,9 @@ def load_datasetDeep(dataset_path: str):
 
     # encode the labels (which are currently strings) as integers and then
     # one-hot encode them
-    print(labels[:5])
     le = LabelEncoder()
     labels = le.fit_transform(labels)
-    print(labels[:5])
     labels = to_categorical(labels, 2)
-    input()
     return data, labels, le
 
 def load_datasetLBPs(dataset_path, numPoints, radius):
