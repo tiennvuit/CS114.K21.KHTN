@@ -93,10 +93,13 @@ def extract_and_save_face(video_path: str, net: object, output_path: str, defaul
 
 				# write the frame to disk
 				p = os.path.sep.join([output_path, str(saved).zfill(4) + ".png"])
-				cv2.imwrite(p, face)
-				saved += 1
-				print("[INFO] saved {} to disk".format(p))
-
+				try:
+					cv2.imwrite(p, face)
+					saved += 1
+					print("[INFO] saved {} to disk".format(p))
+				except:
+					print("Nothing")
+					
 		if show == True:
 			cv2.imshow('Frame', frame)
 			key = cv2.waitKey(1) & 0xFF

@@ -23,7 +23,10 @@ def get_arguments():
 def detect_blur(image, threshold):
     #cv2.imshow('Frame', image)
     #cv2.waitKey(0)
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    try:
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    except:
+        return (False, -1)   
     fm = variance_of_laplacian(gray)
     # if the focus measure is less than the supplied threshold,
     # then the image should be considered "blurry"
