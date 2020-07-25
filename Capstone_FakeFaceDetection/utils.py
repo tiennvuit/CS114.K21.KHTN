@@ -53,10 +53,12 @@ def load_datasetDeep(dataset_path: str):
 
     # encode the labels (which are currently strings) as integers and then
     # one-hot encode them
+    print(labels[:5])
     le = LabelEncoder()
     labels = le.fit_transform(labels)
+    print(labels[:5])
     labels = to_categorical(labels, 2)
-
+    input()
     return data, labels, le
 
 def load_datasetLBPs(dataset_path, numPoints, radius):
