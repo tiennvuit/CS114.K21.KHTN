@@ -1,6 +1,9 @@
 """
 Extract the LBPs feature from dataset and store to disk.
 Aim: load the feature vectors more quickly than load image and extract feature.
+Usage:
+
+	python extract_save_feature.py -d dataset -nP 24 -r 8
 """
 
 import os
@@ -25,7 +28,7 @@ def main(args):
 	data = []
 	labels = []
 
-    # loop over the training images
+        # loop over the training images
 	for imagePath in paths.list_images(args['dataset']):
         # load the image, convert it to grayscale, and describe it
 		image = cv2.imread(imagePath)
@@ -33,7 +36,7 @@ def main(args):
 		hist = desc.describe(gray)
         # extract the label from the image path, then update the
         # label and data lists
-		labels.append(imagePath.split(os.path.sep)[-3])
+		labels.append(imagePath.split(os.path.sep)[2])
 		data.append(hist)
 		print("Extracted the image {} to feature vector.".format(imagePath))
 

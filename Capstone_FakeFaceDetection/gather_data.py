@@ -99,7 +99,7 @@ def extract_and_save_face(video_path: str, net: object, output_path: str, defaul
 					print("[INFO] saved {} to disk".format(p))
 				except:
 					print("Nothing")
-					
+
 		if show == True:
 			cv2.imshow('Frame', frame)
 			key = cv2.waitKey(1) & 0xFF
@@ -110,6 +110,8 @@ def extract_and_save_face(video_path: str, net: object, output_path: str, defaul
 	# do a bit of cleanup
 	vs.release()
 	cv2.destroyAllWindows()
+
+	return saved
 
 
 

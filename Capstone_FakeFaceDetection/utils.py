@@ -24,10 +24,10 @@ def get_arguments():
 		choices=['deeplearning', 'logistic_regression', 'knn', 'random_forest',
 				'decision_tree', 'naive_bayes', 'svm', 'mlp'],
 		help='The model for training')
-	parser.add_argument('--numPoints', '-nP', default=24,
-		help='The number of points parameter for LBPs appoach')
-	parser.add_argument('--radius', '-r', default=8,
-		help='The radius parameter for LBPs appoach')
+	#parser.add_argument('--numPoints', '-nP', default=24,
+	#	help='The number of points parameter for LBPs appoach')
+	#parser.add_argument('--radius', '-r', default=8,
+	#	help='The radius parameter for LBPs appoach')
 
 	return vars(parser.parse_args())
 
@@ -53,6 +53,9 @@ def load_datasetDeep(dataset_path: str):
 
     # encode the labels (which are currently strings) as integers and then
     # one-hot encode them
+    print("--> The number of images: {}".format(len(labels)))
+    time.sleep(3)
+
     le = LabelEncoder()
     labels = le.fit_transform(labels)
     labels = to_categorical(labels, 2)
@@ -65,7 +68,7 @@ def load_datasetLBPs(dataset_path, numPoints, radius):
 	data = []
 	labels = []
 
-    # loop over the training images
+        # loop over the training images
 	for imagePath in paths.list_images(dataset_path):
         # load the image, convert it to grayscale, and describe it
 		image = cv2.imread(imagePath)
@@ -75,7 +78,8 @@ def load_datasetLBPs(dataset_path, numPoints, radius):
         # label and data lists
 		labels.append(imagePath.split(os.path.sep)[-3])
 		data.append(hist)
-
+	print("--> The number of image: {}".format(len(labels)))
+	time.sleep(3)
 	return data, labels
 
 
@@ -98,10 +102,12 @@ def plot_progress(model: object, name):
 
 def load_extracted_feature(path):
 	try:
+		print("[INFO] Loading feature vectors ...")
 		with open(path, 'rb') as f:
 			data, labels = pickle.load(f)
 	except:
 		print("The path of extracted feature is not invalid !")
 		exit(0)
-
+	print("--> The number of feature vectors: {}".format(len(labels)))
+	time.sleep(3)
 	return data, labels
