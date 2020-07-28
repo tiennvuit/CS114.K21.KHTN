@@ -18,7 +18,7 @@ from config import EPOCHS
 def get_arguments():
 	# construct the argument parser and parse the arguments
 	parser = argparse.ArgumentParser()
-	parser.add_argument("--path", "-p", default="dataset",
+	parser.add_argument("--dataset", "-d", default="dataset",
 		help="path to input dataset")
 	parser.add_argument('--model', '-m', default='deeplearning',
 		choices=['deeplearning', 'logistic_regression', 'knn', 'random_forest',
@@ -43,61 +43,40 @@ def load_datasetDeep(dataset_path: str):
     for imagePath in imagePaths:
     	# extract the class label from the filename, load the image and
     	# resize it to be a fixed 32x32 pixels, ignoring aspect ratio
-    	label = imagePath.split(os.path.sep)[2]
-    	image = cv2.imread(imagePath)
-    	image = cv2.resize(image, (32, 32))
-
-    	# update the data and labels lists, respectively
-    	data.append(image)
-    	labels.append(label)
-
+       label = imagePath.split(os.path.sep)[3]
+       image = cv2.imread(imagePath)
+       image = cv2.resize(image, (64, 64))
+       data.append(image)
+       labels.append(label)
+       
     # encode the labels (which are currently strings) as integers and then
     # one-hot encode them
     print("--> The number of images: {}".format(len(labels)))
     time.sleep(3)
-
     le = LabelEncoder()
     labels = le.fit_transform(labels)
     labels = to_categorical(labels, 2)
-    return data, labels, le
+    return np.array(data), np.array(labels), le
+
 
 def load_datasetLBPs(dataset_path, numPoints, radius):
-
-	# Create a LocalBinaryPatterns object
-	desc = LocalBinaryPatterns(numPoints, radius)
-	data = []
-	labels = []
-
-        # loop over the training images
-	for imagePath in paths.list_images(dataset_path):
-        # load the image, convert it to grayscale, and describe it
-		image = cv2.imread(imagePath)
-		gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-		hist = desc.describe(gray)
+    # Create a LocalBinaryPatterns object
+    desc = LocalBinaryPatterns(numPoints, radius)
+    data = []
+    labels = []
+    # loop over the training image
+    for imagePath in paths.list_images(dataset_path):
+    # load the image, convert it to grayscale, and describe it
+        image = cv2.imread(imagePath)
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        hist = desc.describe(gray)
         # extract the label from the image path, then update the
         # label and data lists
-		labels.append(imagePath.split(os.path.sep)[-3])
-		data.append(hist)
-	print("--> The number of image: {}".format(len(labels)))
-	time.sleep(3)
-	return data, labels
-
-
-def plot_progress(model: object, name):
-    # plot the training loss and accuracy
-    plt.style.use("ggplot")
-    plt.figure()
-    plt.plot(np.arange(0, EPOCHS), model.history["loss"], label="train_loss")
-    plt.plot(np.arange(0, EPOCHS), model.history["val_loss"], label="val_loss")
-    plt.plot(np.arange(0, EPOCHS), model.history["accuracy"], label="train_acc")
-    plt.plot(np.arange(0, EPOCHS), model.history["val_accuracy"], label="val_acc")
-    plt.title("Training Loss and Accuracy on Dataset")
-    plt.xlabel("Epoch #")
-    plt.ylabel("Loss/Accuracy")
-    plt.legend(loc="lower left")
-    if not os.path.exists("figures"):
-        os.mkdir("figures")
-    plt.savefig("figures/plot_" + name)
+        labels.append(imagePath.split(os.path.sep)[3])
+        data.append(hist)
+    print("--> The number of image: {}".format(len(labels)))
+    time.sleep(3)
+    return np.array(data), np.array(labels)
 
 
 def load_extracted_feature(path):
@@ -111,3 +90,21 @@ def load_extracted_feature(path):
 	print("--> The number of feature vectors: {}".format(len(labels)))
 	time.sleep(3)
 	return data, labels
+
+
+
+def plot_progress(model: object, name):
+    # plot the training loss and accuracy
+    plt.style.use("ggplot")
+    plt.figure()
+    plt.plot(np.arange(0, EPOCHS), model.history["loss"], label="train_loss")
+    plt.plot(np.arange(0, EPOCHS), model.history["val_loss"], label="val_loss")
+    plt.plot(np.arange(0, EPOCHS), model.history["acc"], label="train_acc")
+    plt.plot(np.arange(0, EPOCHS), model.history["val_acc"], label="val_acc")
+    plt.title("Training Loss and Accuracy on Dataset")
+    plt.xlabel("Epoch #")
+    plt.ylabel("Loss/Accuracy")
+    plt.legend(loc="lower left")
+    if not os.path.exists("figures"):
+        os.mkdir("figures")
+    plt.savefig("figures/plot_" + name)
