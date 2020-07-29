@@ -38,7 +38,7 @@ def load_datasetDeep(dataset_path: str):
     imagePaths = list(paths.list_images(dataset_path))
     data = []
     labels = []
-
+    fake_number = 0
     # loop over all image paths
     for imagePath in imagePaths:
     	# extract the class label from the filename, load the image and
@@ -48,10 +48,14 @@ def load_datasetDeep(dataset_path: str):
        image = cv2.resize(image, (64, 64))
        data.append(image)
        labels.append(label)
+       if label == 'fake':
+           fake_number += 1
        
     # encode the labels (which are currently strings) as integers and then
     # one-hot encode them
     print("--> The number of images: {}".format(len(labels)))
+    print("\t--> The number of fake image: {}".format(fake_number))
+    print("\t--> The number of real image: {}".format(len(labels)-fake_number))
     time.sleep(3)
     le = LabelEncoder()
     labels = le.fit_transform(labels)
@@ -88,6 +92,13 @@ def load_extracted_feature(path):
 		print("The path of extracted feature is not invalid !")
 		exit(0)
 	print("--> The number of feature vectors: {}".format(len(labels)))
+	#print("\t--> The number of fake image: {}".format(len(np.array(labels)=0)))
+	fake_number = 0
+	for label in labels:
+		if label == 'fake':
+			fake_number += 1
+	print("\t--> The number of fake face: {}".format(fake_number))
+	print("\t--> The number of real face: {}".format(len(labels) - fake_number))
 	time.sleep(3)
 	return data, labels
 

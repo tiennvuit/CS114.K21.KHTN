@@ -47,7 +47,7 @@ decisionTree_model = tree.DecisionTreeClassifier()
 bayes_model = GaussianNB()
 svm_model = make_pipeline(StandardScaler(), SVC(gamma='auto'))
 neuronNet_model = MLPClassifier(solver='lbfgs', alpha=1e-5,
-                                hidden_layer_sizes=(64, 32, 32, 64, 2),
+                                hidden_layer_sizes=(32, 32, 64, 64, 128, 128, 2),
                                 random_state=1)
 
 
@@ -58,5 +58,5 @@ hand_crafted_models = {
     'decision_tree': decisionTree_model,
     'naive_bayes': bayes_model,
     'svm': svm_model,
-    'neural_net': neuronNet_model,
+    'mlp': neuronNet_model,
 }
