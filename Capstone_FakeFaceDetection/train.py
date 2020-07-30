@@ -94,7 +94,7 @@ def main(args):
         print("[INFO] Evaluating network on the test data ...")
         print("\t- The accuracy of model on training set: {}".format(model.score(trainX, trainY)))
         y_pred = model.predict(testX)
-        print("\t- The accuary of model on test set: {}".format(accuracy_score(y_true=testY, y_pred=y_pred)))
+        print("\t- The accurary of model on test set: {}".format(accuracy_score(y_true=testY, y_pred=y_pred)))
         print("\t- The confusion matrix of model on test set: \n{}".format(classification_report(y_true=testY, y_pred=y_pred)))
 
 	# Save the model to disk
