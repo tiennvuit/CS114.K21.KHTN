@@ -50,7 +50,7 @@ def load_datasetDeep(dataset_path: str):
        labels.append(label)
        if label == 'fake':
            fake_number += 1
-       
+
     # encode the labels (which are currently strings) as integers and then
     # one-hot encode them
     print("--> The number of images: {}".format(len(labels)))
@@ -110,8 +110,8 @@ def plot_progress(model: object, name):
     plt.figure()
     plt.plot(np.arange(0, EPOCHS), model.history["loss"], label="train_loss")
     plt.plot(np.arange(0, EPOCHS), model.history["val_loss"], label="val_loss")
-    plt.plot(np.arange(0, EPOCHS), model.history["acc"], label="train_acc")
-    plt.plot(np.arange(0, EPOCHS), model.history["val_acc"], label="val_acc")
+    plt.plot(np.arange(0, EPOCHS), model.history["accuracy"], label="train_acc")
+    plt.plot(np.arange(0, EPOCHS), model.history["val_accuracy"], label="val_acc")
     plt.title("Training Loss and Accuracy on Dataset")
     plt.xlabel("Epoch #")
     plt.ylabel("Loss/Accuracy")
