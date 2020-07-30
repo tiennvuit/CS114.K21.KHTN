@@ -26,6 +26,11 @@ def get_arguments():
 		help="path to OpenCV's deep learning face detector")
 	parser.add_argument("-c", "--confidence", type=float, default=0.5,
 		help="minimum probability to filter weak detections")
+	parser.add_argument("-nP", "--points", type=int, default=24,
+		help="The number of points for local binary patterns")
+	parser.add_argument("-r", "--radius", type=int, default=8,
+		help="The radius for local binary patterns")
+
 	return vars(parser.parse_args())
 
 
@@ -128,7 +133,7 @@ def main(args):
 	# Using hand-crafted models
 	else:
 		from hand_crafted_model import LocalBinaryPatterns
-		desc = LocalBinaryPatterns(numPoints=24, radius=8)
+		desc = LocalBinaryPatterns(numPoints=args['points'], radius=args['radius'])
 
 		while True:
 			# grab the frame from the threaded video stream and resize it
@@ -172,7 +177,7 @@ def main(args):
 
 					# pass the face ROI through the trained liveness detector
 					# model to determine if the face is "fake" or "real"
-					preds = model.predict_proba(hist)[0]
+					preds = model.predict_proba(np.array(hist))[0]
 					j = np.argmax(preds)
 					label = ENCODED_LABELS[j]
 
