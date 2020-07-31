@@ -22,19 +22,22 @@ def main(args):
 
         TRAIN_PATH = os.path.join(args["dataset"], "train")
         TEST_PATH = os.path.join(args["dataset"], "test")
-
+        EPOCHS = args['epochs']
+        TEST_SIZE = args['test_size']
+        SIZE = args['resized_size']
+        BS = args['batch_size']
+        
         from classifier.livenessnet import LivenessNet
         from tensorflow.keras.preprocessing.image import ImageDataGenerator
         from tensorflow.keras.optimizers import Adam
 
 
-        data, labels, le = load_datasetDeep(TRAIN_PATH)
+        data, labels, le = load_datasetDeep(TRAIN_PATH, SIZE)
         # convert the data into a NumPy array, then preprocess it by scaling
         # all pixel intensities to the range [0, 1]
         data = np.array(data, dtype="float") / 255.0
 
-        # partition the data into training and testing splits using 75% of
-        # the data for training and the default remaining 25% for testing
+        # Split data for training process
         (trainX, testX, trainY, testY) = train_test_split(data, labels,
                           test_size=TEST_SIZE, random_state=42)
 
@@ -46,7 +49,7 @@ def main(args):
 		# initialize the optimizer and model
         print("[INFO] Compiling model...")
         opt = Adam(lr=INIT_LR, decay=INIT_LR / EPOCHS)
-        model = LivenessNet.build(width=64, height=64, depth=3,
+        model = LivenessNet.build(width=SIZE, height=SIZE, depth=3,
                                   classes=len(le.classes_))
         model.compile(loss="binary_crossentropy",
                       optimizer=opt,
@@ -61,7 +64,7 @@ def main(args):
 
 	    # evaluate the network
         print("[INFO] Evaluating network on the test data ...")
-        test_data, test_labels, le = load_datasetDeep(TEST_PATH)
+        test_data, test_labels, le = load_datasetDeep(TEST_PATH, SIZE)
         predictions = model.predict(x=test_data, batch_size=BS)
         print("\t- The accuary of model on test set: {}".format(
                  accuracy_score(y_true=test_labels.argmax(axis=1), y_pred=predictions.argmax(axis=1))))
@@ -77,7 +80,7 @@ def main(args):
         model.save(saving_path, save_format="h5")
 
         name_plot = args['dataset'].split(os.path.sep)[1] + '_' + day
-        plot_progress(model=H, name=name_plot)
+        plot_progress(model=H, name=name_plot, EPOCHS=EPOCHS)
 
     # If training by the hancrafted - approach
     else:
