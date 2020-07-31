@@ -65,8 +65,10 @@ def main(args):
         predictions = model.predict(x=test_data, batch_size=BS)
         print("\t- The accuary of model on test set: {}".format(
                  accuracy_score(y_true=test_labels.argmax(axis=1), y_pred=predictions.argmax(axis=1))))
-        print(classification_report(test_labels.argmax(axis=1),
-			     predictions.argmax(axis=1), target_names=le.classes_))
+        print("\t- The confusion matrix of model on test set: \n{}".format(
+                classification_report(
+                                    test_labels.argmax(axis=1),
+                                    predictions.argmax(axis=1), target_names=le.classes_)))
 
 	    # save the network to disk
         day = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
@@ -77,6 +79,7 @@ def main(args):
         name_plot = args['dataset'].split(os.path.sep)[1] + '_' + day
         plot_progress(model=H, name=name_plot)
 
+    # If training by the hancrafted - approach
     else:
 
         data, labels = load_extracted_feature(path=args['dataset'])

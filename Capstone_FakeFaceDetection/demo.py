@@ -13,7 +13,7 @@ import time
 import cv2
 import os
 from config import ENCODED_LABELS
-
+from classifier.hand_crafted_model import LocalBinaryPatterns
 
 def get_arguments():
 	# construct the argument parser and parse the arguments
@@ -36,13 +36,13 @@ def get_arguments():
 
 def main(args):
 	# load our serialized face detector from disk
-	print("[INFO] loading face detector...")
+	print("[INFO] Loading face detector...")
 	protoPath = os.path.sep.join([args["detector"], "deploy.prototxt"])
 	modelPath = os.path.sep.join([args["detector"], "res10_300x300_ssd_iter_140000.caffemodel"])
 	net = cv2.dnn.readNetFromCaffe(protoPath, modelPath)
 
 	# load the liveness detector model and label encoder from disk
-	print("[INFO] loading liveness detector...")
+	print("[INFO] Loading face anti-spoofing detector...")
 	if args['model'].find('deep') != -1:
 		model = load_model(args["model"])
 	elif args['model'].find('hand') != -1:
@@ -50,7 +50,7 @@ def main(args):
 	# le = pickle.loads(open(args["le"], "rb").read())
 
 	# initialize the video stream and allow the camera sensor to warmup
-	print("[INFO] starting video stream...")
+	print("[INFO] Starting video stream...")
 	vs = VideoStream(src=0).start()
 	time.sleep(2.0)
 
@@ -132,7 +132,7 @@ def main(args):
 
 	# Using hand-crafted models
 	else:
-		from hand_crafted_model import LocalBinaryPatterns
+
 		desc = LocalBinaryPatterns(numPoints=args['points'], radius=args['radius'])
 
 		while True:
@@ -177,6 +177,7 @@ def main(args):
 
 					# pass the face ROI through the trained liveness detector
 					# model to determine if the face is "fake" or "real"
+
 					preds = model.predict_proba(np.array(hist))[0]
 					j = np.argmax(preds)
 					label = ENCODED_LABELS[j]

@@ -11,7 +11,7 @@ import argparse
 import pickle
 from imutils import paths
 import cv2
-from hand_crafted_model import LocalBinaryPatterns
+from classifier.hand_crafted_model import LocalBinaryPatterns
 
 def get_arguments():
 	# construct the argument parser and parse the arguments
@@ -27,7 +27,7 @@ def main(args):
     desc = LocalBinaryPatterns(args['numPoints'], args['radius'])
     data = []
     labels = []
-    
+
     # loop over the training images
     for imagePath in paths.list_images(args['dataset']):
         print("Extracting the image {} to feature vector.".format(imagePath))
@@ -39,7 +39,7 @@ def main(args):
         # label and data lists
         labels.append(imagePath.split(os.path.sep)[3])
         data.append(hist)
-        
+
     pickle.dump((data, labels), open(os.path.join(args['output'], args['dataset'].split(os.path.sep)[1], "{}p-{}r.pl".format(args['numPoints'], args['radius'])), 'wb'))
 
 if __name__ == '__main__':
