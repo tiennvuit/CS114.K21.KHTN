@@ -17,13 +17,13 @@ from sklearn.metrics import classification_report, accuracy_score
 
 def main(args):
 
+    TEST_SIZE = args['test_size']
     # Load dataset to memory follow the selected approach
     if args['model'] == 'deeplearning':
 
         TRAIN_PATH = os.path.join(args["dataset"], "train")
         TEST_PATH = os.path.join(args["dataset"], "test")
         EPOCHS = args['epochs']
-        TEST_SIZE = args['test_size']
         SIZE = args['resized_size']
         BS = args['batch_size']
         
@@ -90,7 +90,7 @@ def main(args):
         (trainX, testX, trainY, testY) = train_test_split(data, labels,
 					test_size=TEST_SIZE, random_state=42)
 	# Get model
-        from hand_crafted_model import hand_crafted_models
+        from classifier.hand_crafted_model import hand_crafted_models
         model = hand_crafted_models[args['model']]
 
 	# Training model
