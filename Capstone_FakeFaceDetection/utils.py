@@ -13,7 +13,7 @@ import os
 import time
 from classifier.hand_crafted_model import LocalBinaryPatterns
 
-#from config import EPOCHS
+from config import EPOCHS
 
 def get_arguments():
 	# construct the argument parser and parse the arguments
@@ -24,14 +24,6 @@ def get_arguments():
 		choices=['deeplearning', 'logistic_regression', 'knn', 'random_forest',
 				'decision_tree', 'naive_bayes', 'svm', 'mlp'],
 		help='The model for training')
-	parser.add_argument("--epochs", "-ep", type=int, default=50,
-		help="The number of times we loop through all samples in dataset")
-	parser.add_argument("--resized_size", "-resized", type=int, default=64,
-		help="The size of resized image for training")
-	parser.add_argument("--test_size", "-t_size", type=float, default=0.25,
-                help="The ratio of test data when splitting")
-	parser.add_argument("--batch_size", "-batch", type=int, default=32,
-		help="The number of samples for each training")
 	#parser.add_argument('--numPoints', '-nP', default=24,
 	#	help='The number of points parameter for LBPs appoach')
 	#parser.add_argument('--radius', '-r', default=8,
@@ -39,7 +31,7 @@ def get_arguments():
 
 	return vars(parser.parse_args())
 
-def load_datasetDeep(dataset_path: str, size_image):
+def load_datasetDeep(dataset_path: str):
     # grab the list of images in our dataset directory, then initialize
     # the list of data (i.e., images) and class images
     print("[INFO] loading images...")
@@ -53,7 +45,7 @@ def load_datasetDeep(dataset_path: str, size_image):
     	# resize it to be a fixed 32x32 pixels, ignoring aspect ratio
        label = imagePath.split(os.path.sep)[3]
        image = cv2.imread(imagePath)
-       image = cv2.resize(image, (size_image, size_image))
+       image = cv2.resize(image, (64, 64))
        data.append(image)
        labels.append(label)
        if label == 'fake':
@@ -112,14 +104,14 @@ def load_extracted_feature(path):
 
 
 
-def plot_progress(model: object, name, EPOCHS):
+def plot_progress(model: object, name):
     # plot the training loss and accuracy
     plt.style.use("ggplot")
     plt.figure()
     plt.plot(np.arange(0, EPOCHS), model.history["loss"], label="train_loss")
     plt.plot(np.arange(0, EPOCHS), model.history["val_loss"], label="val_loss")
-    plt.plot(np.arange(0, EPOCHS), model.history["acc"], label="train_acc")
-    plt.plot(np.arange(0, EPOCHS), model.history["val_acc"], label="val_acc")
+    plt.plot(np.arange(0, EPOCHS), model.history["accuracy"], label="train_acc")
+    plt.plot(np.arange(0, EPOCHS), model.history["val_accuracy"], label="val_acc")
     plt.title("Training Loss and Accuracy on Dataset")
     plt.xlabel("Epoch #")
     plt.ylabel("Loss/Accuracy")
