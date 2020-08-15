@@ -25,7 +25,7 @@
 
 ## Dữ liệu cho bài toán
 
-### Cách xây dựng dữ liệu¶
+### Cách xây dựng dữ liệu
 
 - Dữ liệu được thu thập gồm có hai lớp là ảnh chứa khuôn mặt giả thật (0 - Real) và khuôn mặt giả mạo (1 - Fake).
 
@@ -55,13 +55,6 @@ Có hai hướng tiếp cận bài toán này bằng phương pháp máy học:
 
 Thử nghiệm bài toán này với cả hai phương pháp rút trích đặc trưng.
 
-## Các phương pháp sử dụng
-
-## Kết quả và đánh giá
-
-
-## Thực nghiệm
-
 -----
-- Video demo: 
-- File báo cáo (định dạng pptx):
+- Video demo:https://youtu.be/FJNaJZOt7Ds
+- File báo cáo (định dạng pptx):https://docs.google.com/presentation/d/1do372Q5krMrznOaKZ7KrTZuhnzoVVpHSGYOanMERr-E/edit?usp=sharing
